@@ -290,6 +290,13 @@ static final function string ReplaceInString(coerce string src, int from, int le
   return Left(src, from)$with$Mid(src, from+length);
 }
 
+// Moves NUM lements from Source to Dest
+static final function Eat(out string Dest, out string Source, int Num)
+{
+  Dest = Dest $ Left(Source, Num);
+  Source = Mid(Source, Num);
+}
+
 defaultproperties
 {
 }

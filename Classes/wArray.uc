@@ -143,8 +143,8 @@ static final function string Join(array< string > ar, optional string delim, opt
   local int i;
   for (i = 0; i < ar.length; i++)
   {
-    if (result != "") result = result$delim;
     if (bIgnoreEmpty && ar[i] == "") continue;
+    if (result != "") result = result$delim;
     result = result$ar[i];
   }
   return result;

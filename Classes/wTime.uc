@@ -59,12 +59,54 @@ static final function string date(string format, optional int year, optional int
   return class'wString'.static.StrReplace(format, f, t);
 }
 
+// number of seconds between Later and Earlier
 static final function int SpanSeconds(DateTime Later, DateTime Earlier)
 {
   return mktime(later.year, later.month, later.day, later.hour, later.minute, later.second)-mktime(Earlier.year, Earlier.month, Earlier.day, Earlier.hour, Earlier.minute, Earlier.second);
 }
 
+// Same as date but accepts DateTime
 static final function string date2(string format, DateTime dt)
 {
   return date(format, dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
+}
+
+// Returns true if it's a leap year
+static final function bool isLeap(int year)
+{
+  if ((year%100) == 0)
+  {
+    return ((year%400) == 0);
+  }
+  return ((year%4) == 0);
+}
+
+// returns the duration broken down into minutes/ hours/ days/ months/ years
+static final function DateTime duration(int seconds)
+{
+  local DateTime dt;
+  dt.year = (seconds / 31536000);
+  seconds = seconds % 31536000;
+  dt.month = (seconds / 2628000);
+  seconds = seconds % 2628000;
+  dt.day = (seconds / 86400);
+  seconds = seconds % 86400;
+  dt.hour = (seconds / 3600);
+  seconds = seconds % 3600;
+  dt.minute = (seconds / 60);
+  dt.second = seconds % 60;
+  return dt;
+}
+
+// returns how many years/months/days/hours/minutes and x number of seconds is
+static final function DateTime Stats(int seconds)
+{
+  local DateTime dt;
+  dt.year = (seconds / 31536000);
+  dt.month = (seconds / 2628000);
+  dt.day = (seconds / 86400);
+  dt.hour = (seconds / 3600);
+  dt.minute = (seconds / 60);
+  dt.second = seconds;
+  return dt;
 }
