@@ -50,11 +50,11 @@ static final function string StrReplace(coerce string target, array<string> repl
   local int i,j;
   local string Input;
 
-  Input = target;
-  target = "";
   // cycle trough replacement list
   for (j = 0; j < replace.length; j++)
   {
+    Input = target;
+    target = "";
     i = InStr(input, Replace[j]);
     while(i != -1)
     { 
@@ -63,8 +63,8 @@ static final function string StrReplace(coerce string target, array<string> repl
       if (bOnlyFirst) break; // only replace first occurance
       i = InStr(Input, Replace[j]);
     }
+    target = target $ Input;
   }
-  target = target $ Input;
   return target;
 }
 

@@ -23,12 +23,12 @@ static final function DrawMaterialRegion(Canvas C, MaterialRegion M,
     if ( ScaleY == 0 )
         ScaleY = ScaleX;
    
-    X = M.ScreenCoords.X1 * C.SizeX;
-    Y = M.ScreenCoords.Y1 * C.SizeY;
-    W = (M.ScreenCoords.X2 - M.ScreenCoords.X1) * C.SizeX;
-    H = (M.ScreenCoords.Y2 - M.ScreenCoords.Y1) * C.SizeY;
-    CenterX = (M.ScreenCoords.X1 + M.ScreenCoords.X2) * 0.5 * C.SizeX;
-    CenterY = (M.ScreenCoords.Y1 + M.ScreenCoords.Y2) * 0.5 * C.SizeY;
+    X = M.ScreenCoords.X1 * C.ClipX;
+    Y = M.ScreenCoords.Y1 * C.ClipY;
+    W = (M.ScreenCoords.X2 - M.ScreenCoords.X1) * C.ClipX;
+    H = (M.ScreenCoords.Y2 - M.ScreenCoords.Y1) * C.ClipY;
+    CenterX = (M.ScreenCoords.X1 + M.ScreenCoords.X2) * 0.5 * C.ClipX;
+    CenterY = (M.ScreenCoords.Y1 + M.ScreenCoords.Y2) * 0.5 * C.ClipY;
    
     W *= ScaleX;
     H *= ScaleY;
