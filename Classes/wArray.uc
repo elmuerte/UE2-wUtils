@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // filename:    wArray.uc
-// revision:    101
+// revision:    102
 // authors:     various UnrealWiki members (http://wiki.beyondunreal.com)
 //              http://wiki.beyondunreal.com/El_Muerte_TDS/WUtils
 ///////////////////////////////////////////////////////////////////////////////
@@ -269,4 +269,38 @@ static final function string MinS(out array<string> ar)
     if (ar[i] < tmp) tmp = ar[i];
   }
   return tmp;
+}
+
+// search a string array for an element, return it's index or -1 if not found
+static final function int BinarySearch(array<string> Myarray, string SearchString, optional int Low, optional int High, optional bool bIgnoreCase)
+{
+  local int Middle;
+  if (High == 0) High = MyArray.length-1;
+  if (bIgnoreCase) SearchString = Caps(SearchString);
+
+  while (Low <= High) 
+  {
+    Middle = (Low + High) / 2;
+    if (bIgnoreCase) if (MyArray[Middle] ~= SearchString) return Middle;
+      else if (MyArray[Middle] == SearchString) return Middle;
+    if (MyArray[Middle] > SearchString) High = Middle - 1;
+      else if (MyArray[Middle] < SearchString) Low = Middle + 1;
+  }
+  return -1;           
+}
+
+// returns the common beginning of items in a string array
+static final function string GetCommonBegin(array<string> slist)
+{
+  local int i;
+  local string common, tmp2;
+
+  common = slist[0];
+  for (i = 1; i < slist.length; i++)
+  {
+    tmp2 = slist[i];
+    while ((InStr(tmp2, common) != 0) && (common != "")) common = Left(common, Len(common)-1);
+    if (common == "") return "";
+  }
+  return common;
 }
