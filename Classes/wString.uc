@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // filename:    wString.uc
-// revision:    102
+// revision:    103
 // authors:     various UnrealWiki members (http://wiki.beyondunreal.com)
 //              http://wiki.beyondunreal.com/El_Muerte_TDS/WUtils
 ///////////////////////////////////////////////////////////////////////////////
@@ -242,14 +242,27 @@ static final function string Capitalize(coerce string S)
 // no problems when it starts with a delim
 // no problems with ending spaces
 // delim can be a string
-static final function int Split2(coerce string src, string delim, out array<string> parts)
+// TODO: optional bool quotechar, 
+static final function int Split2(coerce string src, string delim, out array<string> parts, optional bool ignoreEmpty)
 {
+  local string temp;
   Parts.Remove(0, Parts.Length);
   if (delim == "" || Src == "" ) return 0;
   while (src != "")
   {
-    parts.length = parts.length+1;
-    parts[parts.length-1] = StrShift(src, delim);
+    temp = StrShift(src, delim);
+    if (temp == "")
+    {
+      if (!ignoreEmpty)
+      {
+        parts.length = parts.length+1;
+        parts[parts.length-1] = temp;
+      }
+    }
+    else {
+      parts.length = parts.length+1;
+      parts[parts.length-1] = temp;
+    }
   }
   return parts.length;
 }

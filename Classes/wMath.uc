@@ -191,7 +191,7 @@ static final function RSAEncode(coerce string data, int E, int N, out array<int>
 
 static final function string RSADecode(array<int> data, int D, int N)
 {
-  local int i, j, G, F, C;
+  local int i, C;
   local string result;
   for (i = 0; i < data.length; i++)
   {
