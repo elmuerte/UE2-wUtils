@@ -2,7 +2,7 @@
 // filename:    wTime.uc
 // revision:    100
 // authors:     various UnrealWiki members (http://wiki.beyondunreal.com)
-//              http://wiki.beyondunreal.com/El_Muerte_TDS/WUtils
+//              http://wiki.beyondunreal.com/WUtils
 ///////////////////////////////////////////////////////////////////////////////
 
 class wTime extends Object exportstructs;

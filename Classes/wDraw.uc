@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////////////////////////
+// filename:    wDraw.uc
+// revision:    101
+// authors:     various UnrealWiki members (http://wiki.beyondunreal.com)
+//              http://wiki.beyondunreal.com/WUtils
+///////////////////////////////////////////////////////////////////////////////
+
 class wDraw extends Object exportstructs;
 
 struct MaterialRegion 
@@ -29,7 +36,7 @@ static final function DrawMaterialRegion(Canvas C, MaterialRegion M,
     H = (M.ScreenCoords.Y2 - M.ScreenCoords.Y1) * C.ClipY;
     CenterX = (M.ScreenCoords.X1 + M.ScreenCoords.X2) * 0.5 * C.ClipX;
     CenterY = (M.ScreenCoords.Y1 + M.ScreenCoords.Y2) * 0.5 * C.ClipY;
-   
+       
     W *= ScaleX;
     H *= ScaleY;
     X = CenterX - 0.5 * W;
@@ -53,27 +60,40 @@ static final function DrawMaterialRegion(Canvas C, MaterialRegion M,
 }
 
 // draws a float value with the decimal point at about the specified coordinates
-static final function DrawDecimalNumberAt(Canvas C, float Value, float X, float Y, optional bool bClipped)
+static final function DrawDecimalNumberAt(Canvas C, float Value, float X, float Y, optional bool bClipped, optional int Precision)
 {
-    local float IntPart, FloatPart;
-    local float XL, YL;
+    local int IntPart;
+    local float FloatPart;
+    local float XL, YL, OldX, OldY;
     local string IntString, FloatString;
-   
-    IntPart = Ceil(Value);
-    FloatPart = Abs(Value) - Abs(IntPart);
-    IntString = string(int(IntPart));
-    FloatString = Mid(string(FloatPart), Instr(string(FloatPart), "."));
+    
+    OldX = C.CurX; OldY = C.CurY;
+    
+    if ( Precision == 0 )
+        Precision = 2; // default UT2k3 setting
+    else
+        Precision = Max(Precision, 1);  // otherwise Canvas.DrawScreenText should be used
+    
+    if ( Value < 0 ) {
+        IntString = "-";
+        Value *= -1;
+    }
+    IntPart = int(Value);
+    FloatPart = Value - IntPart;
+    IntString = IntString $ string(IntPart);
+    IntString = string(IntPart);
+    FloatString = string(int(FloatPart * 10 ** Precision));
+    while (Len(FloatString) < Precision)
+        FloatString = "0" $ FloatString;
+    
     C.TextSize(IntString, XL, YL);
     C.SetPos(X - XL, Y);
     if ( !bClipped )
-        C.DrawText(IntString);
+        C.DrawText(IntString$"."$FloatString);
     else
-        C.DrawTextClipped(IntString);
-    C.SetPos(X, Y);
-    if ( !bClipped )
-        C.DrawText(FloatString);
-    else
-        C.DrawTextClipped(FloatString);
+        C.DrawTextClipped(IntString$"."$FloatString);
+    
+    C.SetPos(OldX, OldY);   // reset draw position
 }
 
 // Calculates a box around an actor in relative screen coordinates. 
@@ -119,4 +139,39 @@ static final function ResetClipRegion(Canvas C)
 {
     C.SetOrigin(C.Default.OrgX, C.Default.OrgY);
     C.SetClip(C.Default.ClipX, C.Default.ClipY);
+}
+
+// This function is a corrected version of the function with the same name in the Canvas class.
+static final function DrawBracket(Canvas C, float width, float height, float bracket_size)
+{
+    local float X, Y;
+    X = C.CurX;
+    Y = C.CurY;
+
+    Width  = max(width,5);
+    Height = max(height,5);
+    
+    // top left
+    C.DrawLine(3, bracket_size);    // to left
+    C.DrawLine(1, bracket_size);    // down
+    
+    // top right
+    C.SetPos(X + width, Y);
+    C.DrawLine(2, bracket_size);    // to right
+    C.SetPos(X + width - 2, Y);
+    C.DrawLine(1, bracket_size);    // down
+    
+    // bottom right
+    C.SetPos(X + width - 2, Y + height);
+    C.DrawLine(0, bracket_size);    // up
+    C.SetPos(X + width, Y + height - 2);
+    C.DrawLine(2, bracket_size);    // to right
+    
+    // bottom left
+    C.SetPos(X, Y + height - 2);
+    C.DrawLine(3, bracket_size);    // to left
+    C.SetPos(X, Y + height);
+    C.DrawLine( 0, bracket_size);   // up
+
+    C.SetPos(X, Y);
 }

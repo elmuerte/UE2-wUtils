@@ -2,7 +2,7 @@
 // filename:    wString.uc
 // revision:    103
 // authors:     various UnrealWiki members (http://wiki.beyondunreal.com)
-//              http://wiki.beyondunreal.com/El_Muerte_TDS/WUtils
+//              http://wiki.beyondunreal.com/WUtils
 ///////////////////////////////////////////////////////////////////////////////
 
 class wString extends Object;
@@ -295,6 +295,66 @@ static final function Eat(out string Dest, out string Source, int Num)
 {
   Dest = Dest $ Left(Source, Num);
   Source = Mid(Source, Num);
+}
+
+// Converts a float to a string representation
+static final function string FloatToString(float Value, optional int Precision)
+{
+  local int IntPart;
+  local float FloatPart;
+  local string IntString, FloatString;
+  
+  Precision = Max(Precision, 1);  // otherwise a simple int cast should be used
+  
+  if ( Value < 0 ) {
+    IntString = "-";
+    Value *= -1;
+  }
+  IntPart = int(Value);
+  FloatPart = Value - IntPart;
+  IntString = IntString $ string(IntPart);
+  FloatString = string(int(FloatPart * 10 ** Precision));
+  while (Len(FloatString) < Precision)
+    FloatString = "0" $ FloatString;
+  
+  return IntString$"."$FloatString;
+}
+
+function static string AlignLeft(coerce string line, int length, optional string padchar)
+{
+  local int i;
+  if (padchar == "") padchar = " ";
+  i = length-Len(line);
+  while (i > 0)
+  {
+    line = line$padchar;
+    i--;
+  }
+  if (i < 0) line = Left(line, length);
+  return line;
+}
+
+function static string AlignRight(coerce string line, int length, optional string padchar)
+{
+  local int i;
+  if (padchar == "") padchar = " ";
+  i = length-Len(line);
+  while (i > 0)
+  {
+    line = padchar$line;
+    i--;
+  }
+  if (i < 0) line = Right(line, length);
+  return line;
+}
+
+function static string AlignCenter(coerce string line, int length, optional string padchar)
+{
+  local int i, j;
+  if (padchar == "") padchar = " ";
+  i = Len(line)/2;
+  j = Len(line)-i;
+  return AlignRight(Left(line, i), length-(length/2), padchar)$AlignLeft(Right(line, j), length/2, padchar);
 }
 
 defaultproperties
