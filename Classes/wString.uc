@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // filename:    wString.uc
-// revision:    101
+// revision:    102
 // authors:     various UnrealWiki members (http://wiki.beyondunreal.com)
 //              http://wiki.beyondunreal.com/El_Muerte_TDS/WUtils
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ static final function string StrReplace(coerce string target, array<string> repl
   // cycle trough replacement list
   for (j = 0; j < replace.length; j++)
   {
-  	i = InStr(Input, Replace[j]);
+  	i = InStr(input, Replace[j]);
 	  while(i != -1)
   	{	
 	  	target = target $ Left(Input, i) $ With[j];
@@ -47,9 +47,30 @@ static final function string StrReplace(coerce string target, array<string> repl
       if (bOnlyFirst) break; // only replace first occurance
   		i = InStr(Input, Replace[j]);
 	  }
-  	target = target $ Input;
   }
+  target = target $ Input;
   return target;
+}
+
+static final function string StrSubst(coerce string target, optional string r0, optional string r1, optional string r2, optional string r3, 
+  optional string r4, optional string r5, optional string r6, optional string r7, optional string r8, optional string r9)
+{
+  local array<string> replace, with;
+  local int i;
+  replace.length=10;
+  for (i = 0; i < replace.length; i++) replace[i] = "%s";
+  with.length=10;
+  with[0]=r0;
+  with[1]=r1;
+  with[2]=r2;
+  with[3]=r3;
+  with[4]=r4;
+  with[5]=r5;
+  with[6]=r6;
+  with[7]=r7;
+  with[8]=r8;
+  with[9]=r9;
+  return StrReplace(target, replace, with, true);
 }
 
 // Turn a string to lower case
