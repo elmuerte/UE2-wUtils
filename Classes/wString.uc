@@ -139,41 +139,46 @@ static final function string Trim(coerce string S)
 // Internal function used for MaskedCompare
 static private final function bool _match(out string mask, out string target)
 {
-  local string m;
-  if (mask == "") return true; 
-  m = Left(mask,1);
-  if (m == "*") 
-  { 
-    mask = Mid(mask, 1);
-    return _matchstar(m, mask, target);
-  }
-  if (Len(target) > 0 && (m == "?" || m == Left(target,1)) ) 
+  local string m, mp, cp;
+  m = Left(mask, 1);
+  while ((target != "") && (m != "*"))
   {
-    mask = Mid(mask, 1);
+    if ((m != Left(target, 1)) && (m != "?")) return false;
+    mask = Mid(Mask, 1);
     target = Mid(target, 1);
-    return _match(mask, target);
+		m = Left(mask, 1);
   }
-  return false;
-}
 
-// Internal function used for MaskedCompare
-// this will process a *
-static private final function bool _matchstar(string m, out string mask, out string target)
-{
-  local int i, j;
-  local string t;
-
-  if (mask == "") return true;
-
-  for (i = 0; (i < Len(target)) && (m == "?" || m == Mid(target, i, 1)); i++)
+  while (target != "") 
   {
-    j = i;
-    do {
-      t = Left(target, j);
-      if (_match(mask, t)) return true;
-    } until (j-- <= 0)
-  }
-  return false;
+		if (m == "*") 
+    {
+      mask = Mid(Mask, 1);
+			if (mask == "") return true; // only "*" mask -> always true
+			mp = mask;
+			cp = Mid(target, 1);
+      m = Left(mask, 1);
+		} 
+    else if ((m == Left(target, 1)) || (m == "?")) 
+    {
+			mask = Mid(Mask, 1);
+      target = Mid(target, 1);
+  		m = Left(mask, 1);
+		} 
+    else 
+    {
+			mask = mp;
+      m = Left(mask, 1);
+			target = cp;
+      cp = Mid(cp, 1);
+		}
+	}
+
+  while (Left(mask, 1) == "*") 
+  {
+		mask = Mid(Mask, 1);
+	}
+	return (mask == "");
 }
 
 // Compare a string with a mask
