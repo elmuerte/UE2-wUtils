@@ -188,11 +188,7 @@ static final function bool MaskedCompare(coerce string target, string mask, opti
   }
   if (mask == "*") return true;
 
-  do {
-    if ( _match(mask, target)) return true;
-    target = Mid(target, 1);
-  } until (Len(target) <= 0);
-  return false;
+  return _match(mask, target);
 }
 
 // InStr starting from an offset
@@ -287,4 +283,8 @@ static final function int Split2(coerce string src, string delim, out array<stri
 static final function string ReplaceInString(coerce string src, int from, int length, coerce string with)
 {
   return Left(src, from)$with$Mid(src, from+length);
+}
+
+defaultproperties
+{
 }

@@ -304,3 +304,7 @@ static final function string GetCommonBegin(array<string> slist)
   }
   return common;
 }
+
+defaultproperties
+{
+}
