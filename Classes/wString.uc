@@ -253,3 +253,10 @@ static final function int Split2(coerce string src, string delim, out array<stri
   }
   return parts.length;
 }
+
+// Replaces part of a string with a new string
+// ReplaceInString("A stupid string.", 2, 6, "good") == "A good string."
+static final function string ReplaceInString(coerce string src, int from, int length, coerce string with)
+{
+  return Left(src, from)$with$Mid(src, from+length);
+}
