@@ -9,22 +9,38 @@ class wString extends Object;
 
 // Shifts an element off a string
 // example (delim = ' '): 'this is a string' -> 'is a string'
-static final function string StrShift(out string line, string delim)
+// if quotechar = " : '"this is" a string' -> 'a string'
+static final function string StrShift(out string line, string delim, optional string quotechar)
 {
-  local int pos;
-  local string result;
-
-  pos = Instr(line, delim);
-  if (pos == -1)
-  {
-    result = line;
-    line = "";
-  }
-  else {
-    result = Left(line,pos);
-    line = Mid(line,pos+len(delim));
-  }
-  return result;
+    local int delimpos, quotepos;
+    local string result;
+    
+    if ( quotechar != "" && Left(line, Len(quotechar)) == quotechar ) {
+        do {
+            quotepos = InstrFrom(line, quotechar, quotepos + 1);
+        } until (quotepos == -1 || quotepos + Len(quotechar) == Len(line)
+                || Mid(line, quotepos + len(quotechar), len(delim)) == delim);
+    }
+    if ( quotepos != -1 ) {
+        delimpos = InstrFrom(line, delim, quotepos);
+    }
+    else {
+        delimpos = Instr(line, delim);
+    }
+    
+    if (delimpos == -1)
+    {
+        result = line;
+        line = "";
+    }
+    else {
+        result = Left(line,delimpos);
+        line = Mid(line,delimpos+len(delim));
+    }
+    if ( quotechar != "" && Left(result, Len(quotechar)) == quotechar ) {
+      result = Mid(result, Len(quotechar), Len(result)-(Len(quotechar)*2));
+    }
+    return result;
 }
 
 // StrReplace using an array with replacements
@@ -242,15 +258,14 @@ static final function string Capitalize(coerce string S)
 // no problems when it starts with a delim
 // no problems with ending spaces
 // delim can be a string
-// TODO: optional bool quotechar, 
-static final function int Split2(coerce string src, string delim, out array<string> parts, optional bool ignoreEmpty)
+static final function int Split2(coerce string src, string delim, out array<string> parts, optional bool ignoreEmpty, optional string quotechar)
 {
   local string temp;
   Parts.Remove(0, Parts.Length);
   if (delim == "" || Src == "" ) return 0;
   while (src != "")
   {
-    temp = StrShift(src, delim);
+    temp = StrShift(src, delim, quotechar);
     if (temp == "")
     {
       if (!ignoreEmpty)
