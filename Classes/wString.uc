@@ -28,30 +28,31 @@ static final function string StrShift(out string line, string delim)
 }
 
 // StrReplace using an array with replacements
-// will return the changed string, will replace all occurences
+// will return the changed string, will replace all occurences unless bOnlyFirst
 static final function string StrReplace(coerce string target, array<string> replace, array<string> with, optional bool bOnlyFirst)
 {
   local int i,j;
-	local string Input;
+  local string Input;
 
   Input = target;
   target = "";
   // cycle trough replacement list
   for (j = 0; j < replace.length; j++)
   {
-  	i = InStr(input, Replace[j]);
-	  while(i != -1)
-  	{	
-	  	target = target $ Left(Input, i) $ With[j];
-		  Input = Mid(Input, i + Len(Replace[j]));	
+    i = InStr(input, Replace[j]);
+    while(i != -1)
+    { 
+      target = target $ Left(Input, i) $ With[j];
+      Input = Mid(Input, i + Len(Replace[j]));  
       if (bOnlyFirst) break; // only replace first occurance
-  		i = InStr(Input, Replace[j]);
-	  }
+      i = InStr(Input, Replace[j]);
+    }
   }
   target = target $ Input;
   return target;
 }
 
+// StrSubst will replace %s in target with r# where # is the place of %s in the string
 static final function string StrSubst(coerce string target, optional string r0, optional string r1, optional string r2, optional string r3, 
   optional string r4, optional string r5, optional string r6, optional string r7, optional string r8, optional string r9)
 {
